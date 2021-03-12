@@ -36,9 +36,16 @@ Game.prototype = {
                 this.changeDirecction(0, this.tam);
                 break;
             case 'Escape':
-                this.pause();
+                this.pressEscape();
                 break;
 
+        }
+    },
+    pressEscape: function(){
+        if(this.state==0){
+            this.start();
+        }else if(this.state==1){
+            this.pause();
         }
     },
     /*cambia la direccion en que se mueve la vivora*/
@@ -62,9 +69,7 @@ Game.prototype = {
     init: function () {
         this.state = 0;
         this.score = 0;
-        this.width = 300;
-        this.height = 300;
-        this.tam = 10; //tamaño de la parte del cuerpo;
+        
         this.snake = [];
         this.snake.push(pos(parseInt(this.width / 2), parseInt(this.height / 2)));
         this.direction = pos();
@@ -84,6 +89,7 @@ Game.prototype = {
 
     /*ejecutador del juego */
     run: function () {
+        
         if (this.state == 1) {
             let newPart = null;
             this.createFood();
@@ -100,7 +106,10 @@ Game.prototype = {
             this.draw();
             setTimeout(() => this.run(), this.time);
         }
-        console.log("run");
+        
+        console.timeEnd();
+        document.querySelectorAll(".score").forEach(element=>element.innerHTML = "Score: " + this.score);
+        console.time();
     },
     /*metodo de cuando pierde el juego*/
     loser: function () {
@@ -120,27 +129,21 @@ Game.prototype = {
     draw: function () {
         this.screen = this.canvas.getContext("2d");
         this.screen.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.screen.fillStyle = 'white';
-        this.screen.strokeStyle = 'rgb(0, 153, 255)';
-        this.screen.stroke();
-
-        this.snake.forEach(element => {
-            this.screen.save();
-            this.screen.beginPath();
-            this.screen.fillRect(element.x, element.y, this.tam, this.tam);
-            this.screen.fillStyle = '#1b6f1b';
-            this.screen.stroke();
-            this.screen.restore();
-        });
         this.screen.save();
         if (this.food) {
-            this.screen.beginPath();
+            this.screen.beginPath();            
+            this.screen.fillStyle = 'white';
             this.screen.fillRect(this.food.x, this.food.y, this.tam, this.tam);
-            this.screen.fillStyle = 'green';
-            this.screen.stroke();
             this.screen.restore();
         }
+        this.snake.forEach(element => {
+            this.screen.save();
+            this.screen.beginPath();            
+            this.screen.fillStyle = '#1b6f1b';
+            this.screen.fillRect(element.x, element.y, this.tam, this.tam);
+            this.screen.restore();
+        });
+        
 
     },
     /*verifica si colisiono la vivora con alguna parte de su cuerpo*/
@@ -202,19 +205,21 @@ Game.prototype = {
             this.menu.querySelector("#start").innerHTML = "Continuar";
             this.menu.classList.remove("loser");
         }
-        this.menu.querySelector("#score").innerHTML = "Score: " + this.score;
+        
     },
     hideMenu: function () {
         this.canvas.classList.remove('hide');
         this.menu.classList.add("hide");
     },
 
-    constructor: function () {
+    constructor: function (width,height,tam) {
         this.canvas = document.getElementById("screen");
-
-        this.init();
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.width = width;
+        this.height = height;
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.tam = tam; //tamaño de la parte del cuerpo;
+        this.init();        
         this.screen = this.canvas.getContext("2d");
         this.menu = document.getElementById("menu");
         document.addEventListener("keyup", (e) => this.presskey(e));

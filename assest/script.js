@@ -1,8 +1,8 @@
 function Main() {}
 
-Main.prototype.run=function(){
+Main.prototype.run=function(width,height,tam){
     let game = new Game();
-    game.constructor();    
+    game.constructor(width,height,tam);    
     document.getElementById("start").addEventListener("click", () => game.start());
     document.getElementById("reset").addEventListener("click", () => game.reset());
 }
@@ -11,5 +11,6 @@ Main.prototype.run=function(){
 
 document.addEventListener("DOMContentLoaded", () => {
     let main = new Main();
-    main.run();
+    /*inicio el programa pasando los detos width,hieght,tamaño del cuerpo  */
+    main.run(600,600,10);
 });
