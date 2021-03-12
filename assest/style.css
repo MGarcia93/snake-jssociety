@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --background-color: #333;
+    --snake-color: ##1b6f1b;
+    --screen-color: #999;
+    --font-color: white;
+}
+
+.hide{
+    display: none!important;
+}
+body {
+    background-color: var(--background-color);
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    color: var(--font-color);
+    font-family: 'Press Start 2P', cursive;
+    overflow:hidden;
+}
+
+header h1 {
+    text-align: center;
+}
+
+#menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: #e7e7e7 5px solid;
+    box-shadow: 0px 0px 5px #e7e7e7,
+
+        0px 0px 7px #f8f8f8,
+        /* Repetimos el resplandor */
+        0px 0px 10px #f8f8f8,
+        0px 0px 10px #f8f8f8,
+        0px 0px 10px #f8f8f8;
+    height: 220px;
+    width: 200px;
+    border-radius: 2px;
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+#menu li{
+    list-style: none;
+    cursor: pointer;
+}
+
+#screen{
+    background-color: var(--screen-color);
+    border:1px solid white;
+}
+#score:empty{
+    display: none;
+}
