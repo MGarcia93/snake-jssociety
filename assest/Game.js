@@ -105,11 +105,8 @@ Game.prototype = {
             }
             this.draw();
             setTimeout(() => this.run(), this.time);
-        }
-        
-        console.timeEnd();
+        }        
         document.querySelectorAll(".score").forEach(element=>element.innerHTML = "Score: " + this.score);
-        console.time();
     },
     /*metodo de cuando pierde el juego*/
     loser: function () {
