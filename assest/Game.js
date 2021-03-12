@@ -179,6 +179,12 @@ Game.prototype = {
         }
 
     },
+    /**
+     * Genera 
+     * */ 
+    generateBlock: function(){
+
+    },
 
     /*verifica si consumio la comida */
     eated: function () {
