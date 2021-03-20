@@ -1,4 +1,4 @@
-export default class body {
+export default class snake {
     constructor(tam) {
         this.body = [];
         this.tam = tam;
