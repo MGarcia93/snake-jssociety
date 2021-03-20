@@ -1,6 +1,6 @@
-import Snake from './snake.js';
+import Snake from './Snake.js';
 import Screen from './screen.js';
-import Block from './block.js';
+import Block from './Block.js';
 export default class Game {
     constructor(param) {
         this.screen = new Screen(param.width, param.height);
