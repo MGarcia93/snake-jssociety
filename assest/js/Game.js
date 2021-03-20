@@ -1,5 +1,5 @@
 import Snake from './Snake.js';
-import Screen from './screen.js';
+import Screen from './Screen.js';
 import Block from './Block.js';
 export default class Game {
     constructor(param) {
