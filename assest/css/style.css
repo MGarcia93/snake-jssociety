@@ -46,8 +46,8 @@ header>*{
         0px 0px 10px #f8f8f8,
         0px 0px 10px #f8f8f8,
         0px 0px 10px #f8f8f8;
-    height: 220px;
-    width: 200px;
+    height: 180px;
+    width: 220px;
     border-radius: 2px;
     text-align: center;
     font-size: 18px;
@@ -57,9 +57,12 @@ header>*{
     z-index: 1000;
     background-color: var(--background-color);
 }
-
+#menu.loser{
+    width: 250px; 
+    height:200;
+}
 #menu h2 {
-    font-size: 20px;
+    font-size: 22px;
     margin: 0;
 }
 
@@ -67,10 +70,10 @@ header>*{
     list-style: none;
     cursor: pointer;
 }
-
-#menu:not(.loser) span {
-    display: none;
+#menu span{
+    opacity: .8;
 }
+
 
 #screen {
     background-color: var(--screen-color);
