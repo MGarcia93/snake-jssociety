@@ -1,4 +1,4 @@
-import Game from './game.js';
+import Game from './Game.js';
 import Menu from './Menu.js';
 document.addEventListener("DOMContentLoaded",function(){
     const menu= new Menu();
