@@ -42,6 +42,11 @@ export default class snake {
         }
         return false;
     }
+    teleport(width, height){
+        const head = this.body[0];
+        head.y= height<=head.y?0:(head.y<0?height-head.tam:head.y);
+        head.x= width<=head.x?0:(head.x<0?width-head.tam:head.x);
+    }
     crashed(blocks) {
         const head = this.body[0];
         if (blocks.findIndex(element => element.x == head.x && element.y == head.y) != -1) {
