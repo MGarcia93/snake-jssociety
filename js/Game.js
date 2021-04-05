@@ -6,16 +6,21 @@ export default class Game {
 
     constructor() {
         if (this.isMobile()) {
-            this.screen = new Screen(Config.dimensions.mobile.width, Config.dimensions.mobile.height);
+            const mobile = {
+                width: parseInt((window.screen.width) / Config.tam) * Config.tam - Config.tam,
+                height: parseInt(window.screen.height / 2 / Config.tam) * Config.tam
+            }
+            this.screen = new Screen(mobile.width, mobile.height);
             this.createControls();
         } else {
-            this.screen = new Screen(Config.dimensions.desktop.width, Config.dimensions.desktop.height);
+            this.screen = new Screen(Config.dimensions.width, Config.dimensions.height);
             document.addEventListener("keydown", (e) => this.onPress(e.key));
         }
-
         this.snake = new Snake();
         this.tam = Config.tam;
-        this.init()
+        this.init();
+        this.map = 1;
+        this.setDifficulty(1);
         this.color = {
             snake: "#1b6f1b",
             food: "white",
@@ -33,7 +38,21 @@ export default class Game {
     }
     setDifficulty(difficulty) {
         this.difficulty = Config.difficultys[parseInt(difficulty)];
+        this.difficulty.index = parseInt(difficulty);
+        this.screen.updateBorder(this.difficulty.limit);
         this.speed = this.difficulty.speed;
+        this.init();
+    }
+    setMap(map) {
+        this.trap = [];
+        let blocks = Config.maps[parseInt(map)].blocks;
+        for (let key in blocks) {
+            this.trap.push(new Block(blocks[key].x, blocks[key].y, this.tam));
+        };
+        this.map = map;
+    }
+    getMap() {
+        return this.map;
     }
     init() {
         const {
@@ -46,28 +65,25 @@ export default class Game {
         this.snake.addPart(new Block(parseInt(width / 2 / this.tam) * this.tam, parseInt(height / 2 / this.tam) * this.tam, this.tam));
         this.direction = this.getRandonDirection();
         this.trap = [];
-        this.difficulty = null;
         this.screen.clear();
+        document.querySelector(".score").innerHTML = "";
 
     }
     start() {
-        const countdown = new Countdown(3);
         if (this.state == -1) {
             this.init();
 
         }
 
-        if (!this.difficulty) {
-            this.menu.show("difficulty");
-        } else {
-            this.menu.hide();
-            this.screen.show();
-            if (this.isMobile()) {
-                this.controls.classList.remove("hide");
-            }
-            this.state = 1;
-            countdown.show(() => this.run());
+        this.menu.hide();
+        this.screen.show();
+        if (this.isMobile()) {
+            this.controls.classList.remove("hide");
         }
+        this.state = 1;
+        const countdown = new Countdown(3);
+        countdown.show(() => this.run());
+
 
     }
     pause() {
@@ -85,6 +101,14 @@ export default class Game {
         } else if (this.state == 1) {
             this.pause();
         }
+    }
+    options() {
+        this.menu.hide();
+        this.menu.show("options");
+    }
+    help() {
+        this.menu.hide();
+        this.menu.show("help");
     }
     createControls() {
         this.controls = document.getElementById("controls");
@@ -134,6 +158,9 @@ export default class Game {
         let direction = [0, 0];
         direction[parseInt(Math.random() * 2)] = (parseInt(Math.random() * 2) ? -1 : 1) * this.tam;
         return new Block(direction[0], direction[1], this.tam);
+    }
+    getDifficulty() {
+        return this.difficulty;
     }
     run() {
         if (this.state == 1) {
@@ -213,6 +240,7 @@ export default class Game {
     }
     upScore() {
         this.score++;
+        document.querySelector(".score").innerHTML = "scores: " + this.score;
     }
     loser() {
         this.state = -1;

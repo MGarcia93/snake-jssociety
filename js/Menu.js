@@ -1,3 +1,4 @@
+import Select from './Select.js';
 export default class Menu {
     constructor() {
         this.container = document.getElementById("menu");
@@ -12,30 +13,36 @@ export default class Menu {
                 this.container.innerHTML = ` 
                 <h2> BIEVENIDO</h2>
                 <li id="start">Empezar</li>
-                <li id="option">Opciones</li>`;
-                this.setOnClick(["start", "option"]);
+                <li id="options">Opciones</li>
+                <li id="help">Ayuda</li>`;
+                this.setOnClick(["start","help","options"]);
                 this.container.classList.add("main");
                 break;
             case 'pause':
                 this.container.innerHTML = ` 
                 <h2 class="score">Score: ${this.game.score}</h2>
                 <li  id="start">Continuar</li>
-                <li  id="reset">Reiniciar</li>
-                <li id="option">Opciones</li>`;
-                this.setOnClick(["start", "reset"]);
+                <li  id="reset">Reiniciar</li>                
+                <li id="options">Opciones</li>
+                <li id="help">Ayuda</li>`;
+                this.setOnClick(["start", "reset","help","options"]);
                 this.container.classList.add("pause");
                 break;
             case 'lose':
                 this.container.innerHTML = `
                 <h2>Fin del Juego</h2>
-                <li class="score">Tu puntaje: ${this.game.score}</li>                
-                <li id="start">Volver a intentar</li>
-                `;
-                this.setOnClick(["start"]);
+                <span class="score">Tu puntaje: ${this.game.score}</span>                
+                <li id="start">Volver a intentar</li>                
+                <li id="options">Opciones</li>
+                <li id="help">Ayuda</li>`;
+                this.setOnClick(["start","help","options"]);
                 this.container.classList.add("loser");
                 break;
-            case 'difficulty':
-                this.createSelectDifuculty();
+            case 'help':
+                this.createHelp();
+                break;
+            case 'options':
+                this.createOptions();
                 break;
 
         }
@@ -43,10 +50,15 @@ export default class Menu {
     }
     setOnClick(events) {
         events.forEach(key => {
-            document.getElementById(key).onclick = () => this.game[key]();
+            if (this.game[key]) {
+                document.getElementById(key).onclick = () => this.game[key]();
+            } else {
+                document.getElementById(key).onclick = () => this[key]();
+            }
         });
     }
     createSelectDifuculty() {
+        let container=document.createElement("div");
         const description = (level) => {
             const param = Config.difficultys[level];
             let desc = "Modo ";
@@ -55,33 +67,102 @@ export default class Menu {
             desc += param.quantityTrap > 0 ? `y cada ${param.intervalTrap} comida se pone ${param.quantityTrap} trampa en algun lado aletorio del mapa` : "";
             return desc;
         }
-        this.container.innerHTML = `
-            <h2>Elija la dificulta</h2>
-            <div class="selection">
-                <li class="btn btn-difficulty" data-difficulty="1" data-bs-toggle="tooltip" data-bs-placement="right" title="${description(1)}"> Facil</a>
-                <li class="btn btn-difficulty" data-difficulty="2" data-bs-toggle="tooltip" data-bs-placement="right" title="${description(2)}"> Normal</a>
-                <li class="btn btn-difficulty" data-difficulty="3" data-bs-toggle="tooltip" data-bs-placement="right" title="${description(3)}"> Dificil</a>
-            </div>
-            <div class="description hide">
-            </div>
-            <button class="btn" id="selection">Elegir</button>
-        `;
-        this.container.querySelectorAll(".btn").forEach((element) => {
-            element.onclick = () => {
-                if(this.container.querySelector(".btn.selected"))
-                    this.container.querySelector(".btn.selected").classList.remove("selected");
-                element.classList.add("selected");
-                this.container.querySelector(".description").innerHTML = description(element.getAttribute("data-difficulty"));
-                this.container.querySelector(".description").classList.remove('hide');
-                this.game.setDifficulty(element.getAttribute("data-difficulty"));
+        const select = new Select("Dificultad",{
+            0: {
+                attributes: {
+                    difficulty: 1
+                },
+                label: "Facil"
+            },
+            1: {
+                attributes: {
+                    difficulty: 2
+                },
+                label: "Normal"
+            },
+            2: {
+                attributes: {
+                    difficulty: 3
+                },
+                label: "Dificil"
             }
+        })
+       
+        
+        container.appendChild(select.getElement());
+        let divDescription=document.createElement("div");
+        divDescription.className="description hide";
+        
+        container.appendChild(divDescription);
+        select.onClick((element) => {
+            const difficulty = element.getAttribute("difficulty");
+            this.game.setDifficulty(difficulty);
+            container.querySelector(".description").innerHTML = description(difficulty);
+            container.querySelector(".description").classList.remove('hide');
         });
-        this.container.querySelector("#selection").onclick = () => {
-            this.game.start();
-            this.hide();
-        }
-        this.container.querySelector('[data-difficulty="1"]').click();
-        this.container.classList.add("difficulty");
+        select.setSelect(this.game.getDifficulty().index-1);
+        container.classList.add("difficulty");
+        return container;
+    }
+    createSelectMap() {
+        let container=document.createElement("div");
+        let maps={};
+        for(let key in Config.maps){
+            maps[key]={
+                attributes: {
+                    map: key
+                },
+                label: Config.maps[key].label
+            }
+        };
+        const select = new Select("Mapas",maps);             
+        container.appendChild(select.getElement());
+        let divDescription=document.createElement("div");
+        divDescription.className="description hide";
+        
+        container.appendChild(divDescription);
+        select.onClick((element) => {
+            const map = element.getAttribute("map");
+            this.game.setMap(map);
+            //container.querySelector(".description").classList.remove('hide');
+        });
+        select.setSelect(this.game.getMap()-1);
+        container.classList.add("map");
+        return container;
+    }
+    createOptions(){
+        this.container.innerHTML='';
+        this.container.appendChild(this.createSelectDifuculty());
+        this.container.appendChild(this.createSelectMap());
+        let btn= document.createElement("li");
+        btn.id="back";
+        btn.innerText="Volver";
+        btn.onclick=()=>this.show("main");
+        this.container.appendChild(btn);
+    }
+    createHelp() {
+        this.container.innerHTML = `
+            <div class="description">
+                <h2>Historia</h2>
+                Eres una vivorita que tendras que cazar conejos dentro de un corral para sobrevivir y crecer. Esto lo tendras que realizar sin salirte del corral, 
+                esquivando las trampas que te pongan para atraparte y sin morderte a vos mismo ya que eres tan veneso que ni tu sobrevives al veneno
+            </div>
+            <div class="description no-mobile">
+             <h2>Controles</h2>
+             <p>A/←: cambiar direcccion para la izquierda</p>
+             <p>W/↑: cambiar direcccion para arriba</p>
+             <p>D/→: cambiar direcccion para la derecha</p>
+             <p>S/↓: cambiar direcccion para abajo</p>
+             <p>esc: Pausar</p>
+            </div>
+            <li id="back" >Volver</li>
+        `;
+        this.container.querySelector("#back").onclick=()=>{
+            this.show("main")
+        };
+    }
+    help() {
+        this.show('help');
     }
     hide() {
         this.container.classList.add('hide')

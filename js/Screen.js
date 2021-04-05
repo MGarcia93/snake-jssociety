@@ -20,6 +20,13 @@ export default class screen {
             this.context.restore();
         }
     }
+    updateBorder(border){
+        if(border){
+            this.canvas.classList.add("border");
+        }else{
+            this.canvas.classList.remove("border");
+        }
+    }
     getLimit() {
         return {
             width: this.width,

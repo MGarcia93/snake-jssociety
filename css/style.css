@@ -5,10 +5,12 @@
     --snake-color: #1b6f1b;
     --screen-color: #999;
     --font-color: white;
+    --background-select:#e0e0e0;
 }
 
 .hide {
     display: none !important;
+    opacity: 0;
 }
 
 body {
@@ -20,9 +22,8 @@ body {
     font-family: 'Press Start 2P', cursive;
     overflow: hidden;
 }
-
-.score:empty {
-    display: none;
+.score{
+    min-height: 33px;
 }
 
 header {
@@ -62,6 +63,9 @@ header>* {
     background-color: var(--background-color);
     padding: 10px 0px;
 }
+*:not(.hide){
+    animation: show .3s;
+}
 
 #menu h2 {
     font-size: 22px;
@@ -71,30 +75,52 @@ header>* {
 #menu li {
     list-style: none;
     cursor: pointer;
+    margin: 0 2px;
+    line-height: 36px;
+
+}
+#menu li:hover {
+    background-color: var(--background-select);
+    color: #333;
 }
 
 #menu span {
     opacity: .8;
 }
-
-#menu .selection {
-    display: flex;
-    justify-content: center;
-    padding: 5px;
+#menu p{
+    margin: 0;
+    text-align: left;
 }
+#menu .select {
+    width: 90%;    
+    margin: 0 auto; 
+    display: flex; 
+    text-align: left;
+    padding: 5px;
+    position: relative;
+    min-height: 48px
 
-#menu .btn {
+}
+#menu .select .options{ 
+    overflow: hidden;
+    position: absolute;
+    right: 0; 
+    background-color: var(--background-color);
+}
+#menu .options li {
     border: 1px solid black;
-    flex: 1 1 auto;
     color: white;
     border-radius: 0;
     background: rgba(255, 255, 255, .1);
-    margin: 0 2px;
+    margin: 0 2px;     
+    width: 130px;
+    text-align: center;
 }
 
-#menu .btn-difficulty.selected {
-    background-color: #fafafa;
+#menu .options 	 li.selected {
+    background-color: var(--background-select);
     color: #333;
+    display: block!important;
 }
 
 #menu .description.hide {
@@ -111,9 +137,12 @@ header>* {
 
 #screen {
     background-color: var(--screen-color);
-    border: 1px solid white;
+    border: 1px solid rgba(255,255,255,.3);
     margin: auto;
     display: inherit;
+}
+#screen.border {
+    box-shadow: inset 0 0 1px 2px white;
 }
 
 #controls {
@@ -188,7 +217,10 @@ header>* {
     display: inline-flex;
 
 }
-
+@keyframes show {
+    from {opacity:  0;}
+    to {opacity: 1;}
+  }
 
 @media (max-width:768px) {
     #menu h2 {
@@ -201,5 +233,8 @@ header>* {
 
     #menu .btn {
         font-size: 12px;
+    }
+    .no-mobile{
+        display: none;
     }
 }
