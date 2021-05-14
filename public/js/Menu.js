@@ -1,7 +1,8 @@
 import Select from './Select.js';
 export default class Menu {
     constructor() {
-        this.container = document.getElementById("menu");
+        this.container = document.getElementById("menu")
+        this.body = document.querySelector(".bodyMenu");
     }
     setGame(game) {
         this.game = game;
@@ -10,33 +11,33 @@ export default class Menu {
         this.container.className = "center";
         switch (type) {
             case 'main':
-                this.container.innerHTML = ` 
+                this.body.innerHTML = ` 
                 <h2> BIEVENIDO</h2>
                 <li id="start">Empezar</li>
                 <li id="options">Opciones</li>
                 <li id="help">Ayuda</li>`;
-                this.setOnClick(["start","help","options"]);
-                this.container.classList.add("main");
+                this.setOnClick(["start", "help", "options"]);
+                this.body.classList.add("main");
                 break;
             case 'pause':
-                this.container.innerHTML = ` 
+                this.body.innerHTML = ` 
                 <h2 class="score">Score: ${this.game.score}</h2>
                 <li  id="start">Continuar</li>
                 <li  id="reset">Reiniciar</li>                
                 <li id="options">Opciones</li>
                 <li id="help">Ayuda</li>`;
-                this.setOnClick(["start", "reset","help","options"]);
-                this.container.classList.add("pause");
+                this.setOnClick(["start", "reset", "help", "options"]);
+                this.body.classList.add("pause");
                 break;
             case 'lose':
-                this.container.innerHTML = `
+                this.body.innerHTML = `
                 <h2>Fin del Juego</h2>
-                <span class="score">Tu puntaje: ${this.game.score}</span>                
                 <li id="start">Volver a intentar</li>                
                 <li id="options">Opciones</li>
-                <li id="help">Ayuda</li>`;
-                this.setOnClick(["start","help","options"]);
-                this.container.classList.add("loser");
+                <li id="help">Ayuda</li>
+                <span class="score">ppuntaje: ${this.game.score}</span>`;
+                this.setOnClick(["start", "help", "options"]);
+                this.body.classList.add("loser");
                 break;
             case 'help':
                 this.createHelp();
@@ -46,7 +47,7 @@ export default class Menu {
                 break;
 
         }
-        this.container.classList.remove('hide');
+        this.body.classList.remove('hide');
     }
     setOnClick(events) {
         events.forEach(key => {
@@ -58,7 +59,7 @@ export default class Menu {
         });
     }
     createSelectDifuculty() {
-        let container=document.createElement("div");
+        let container = document.createElement("div");
         const description = (level) => {
             const param = Config.difficultys[level];
             let desc = "Modo ";
@@ -67,7 +68,7 @@ export default class Menu {
             desc += param.quantityTrap > 0 ? `y cada ${param.intervalTrap} comida se pone ${param.quantityTrap} trampa en algun lado aletorio del mapa` : "";
             return desc;
         }
-        const select = new Select("Dificultad",{
+        const select = new Select("Dificultad", {
             0: {
                 attributes: {
                     difficulty: 1
@@ -87,12 +88,12 @@ export default class Menu {
                 label: "Dificil"
             }
         })
-       
-        
+
+
         container.appendChild(select.getElement());
-        let divDescription=document.createElement("div");
-        divDescription.className="description hide";
-        
+        let divDescription = document.createElement("div");
+        divDescription.className = "description hide";
+
         container.appendChild(divDescription);
         select.onClick((element) => {
             const difficulty = element.getAttribute("difficulty");
@@ -100,48 +101,48 @@ export default class Menu {
             container.querySelector(".description").innerHTML = description(difficulty);
             container.querySelector(".description").classList.remove('hide');
         });
-        select.setSelect(this.game.getDifficulty().index-1);
+        select.setSelect(this.game.getDifficulty().index - 1);
         container.classList.add("difficulty");
         return container;
     }
     createSelectMap() {
-        let container=document.createElement("div");
-        let maps={};
-        for(let key in Config.maps){
-            maps[key]={
+        let container = document.createElement("div");
+        let maps = {};
+        for (let key in Config.maps) {
+            maps[key] = {
                 attributes: {
                     map: key
                 },
                 label: Config.maps[key].label
             }
         };
-        const select = new Select("Mapas",maps);             
+        const select = new Select("Mapas", maps);
         container.appendChild(select.getElement());
-        let divDescription=document.createElement("div");
-        divDescription.className="description hide";
-        
+        let divDescription = document.createElement("div");
+        divDescription.className = "description hide";
+
         container.appendChild(divDescription);
         select.onClick((element) => {
             const map = element.getAttribute("map");
             this.game.setMap(map);
             //container.querySelector(".description").classList.remove('hide');
         });
-        select.setSelect(this.game.getMap()-1);
+        select.setSelect(this.game.getMap() - 1);
         container.classList.add("map");
         return container;
     }
-    createOptions(){
-        this.container.innerHTML='';
-        this.container.appendChild(this.createSelectDifuculty());
-        this.container.appendChild(this.createSelectMap());
-        let btn= document.createElement("li");
-        btn.id="back";
-        btn.innerText="Volver";
-        btn.onclick=()=>this.show("main");
-        this.container.appendChild(btn);
+    createOptions() {
+        this.body.innerHTML = '';
+        this.body.appendChild(this.createSelectDifuculty());
+        this.body.appendChild(this.createSelectMap());
+        let btn = document.createElement("li");
+        btn.id = "back";
+        btn.innerText = "Volver";
+        btn.onclick = () => this.show("main");
+        this.body.appendChild(btn);
     }
     createHelp() {
-        this.container.innerHTML = `
+        this.body.innerHTML = `
             <div class="description">
                 <h2>Historia</h2>
                 Eres una vivorita que tendras que cazar conejos dentro de un corral para sobrevivir y crecer. Esto lo tendras que realizar sin salirte del corral, 
@@ -157,7 +158,7 @@ export default class Menu {
             </div>
             <li id="back" >Volver</li>
         `;
-        this.container.querySelector("#back").onclick=()=>{
+        this.body.querySelector("#back").onclick = () => {
             this.show("main")
         };
     }
@@ -165,6 +166,7 @@ export default class Menu {
         this.show('help');
     }
     hide() {
-        this.container.classList.add('hide')
+        this.container.classList.add('hide');
     }
+
 }

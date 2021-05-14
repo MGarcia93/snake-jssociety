@@ -14,6 +14,7 @@ export default class Game {
             this.createControls();
         } else {
             this.screen = new Screen(Config.dimensions.width, Config.dimensions.height);
+            document.getElementsByTagName("body")[0].style.maxWidth = Config.dimensions.width + "px";
             document.addEventListener("keydown", (e) => this.onPress(e.key));
         }
         this.snake = new Snake();
@@ -24,7 +25,7 @@ export default class Game {
         this.color = {
             snake: "#1b6f1b",
             food: "white",
-            rap: "#333"
+            trap: "#333"
         }
     }
     isMobile() {
@@ -66,16 +67,15 @@ export default class Game {
         this.direction = this.getRandonDirection();
         this.trap = [];
         this.screen.clear();
-        document.querySelector(".score").innerHTML = "";
 
     }
     start() {
         if (this.state == -1) {
             this.init();
-
         }
-
         this.menu.hide();
+        this.screen.changeActionLegend("mostar");
+        this.updateScore();
         this.screen.show();
         if (this.isMobile()) {
             this.controls.classList.remove("hide");
@@ -86,9 +86,14 @@ export default class Game {
 
 
     }
+    showMenu(action) {
+        this.menu.hide();
+        this.menu.show(action);
+        this.screen.changeActionLegend("ocultar");
+    }
     pause() {
 
-        this.menu.show('pause');
+        this.showMenu('pause');
         this.state = 0;
     }
     reset() {
@@ -103,12 +108,10 @@ export default class Game {
         }
     }
     options() {
-        this.menu.hide();
-        this.menu.show("options");
+        this.showMenu("options");
     }
     help() {
-        this.menu.hide();
-        this.menu.show("help");
+        this.showMenu("help");
     }
     createControls() {
         this.controls = document.getElementById("controls");
@@ -117,7 +120,6 @@ export default class Game {
         })
     }
     onPress(key) {
-
         switch (key) {
             case 'a':
             case 'A':
@@ -238,13 +240,16 @@ export default class Game {
             }
         }
     }
+    updateScore() {
+        document.querySelector(".score").innerHTML = "Puntuacion: " + this.score;
+    }
     upScore() {
         this.score++;
-        document.querySelector(".score").innerHTML = "scores: " + this.score;
+        this.updateScore();
     }
     loser() {
         this.state = -1;
-        this.menu.show('lose');
+        this.showMenu('lose');
     }
     isLoser() {
         const {

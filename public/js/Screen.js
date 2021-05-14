@@ -6,6 +6,8 @@ export default class screen {
         this.canvas.width = width;
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
+        this.legend = document.getElementById("legend");
+
     }
     clear() {
         this.context.clearRect(0, 0, this.width, this.height);
@@ -20,10 +22,10 @@ export default class screen {
             this.context.restore();
         }
     }
-    updateBorder(border){
-        if(border){
+    updateBorder(border) {
+        if (border) {
             this.canvas.classList.add("border");
-        }else{
+        } else {
             this.canvas.classList.remove("border");
         }
     }
@@ -34,6 +36,10 @@ export default class screen {
         }
     }
     show() {
+        this.legend.classList.remove('hide');
         this.canvas.classList.remove('hide');
+    }
+    changeActionLegend(action) {
+        this.legend.querySelector(".action").innerText = action;
     }
 }
